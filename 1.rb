@@ -1,3 +1,4 @@
+require 'byebug'
 class BalanceCheck
   OPEN = {curly: '{', paren: "(", bracket: "["}
   CLOSE = {curly: '}', paren: ')', bracket: ']'}
@@ -15,14 +16,12 @@ class BalanceCheck
 
   def is_balanced?
     stack = []
-    string.each_char do |char|
-      if OPEN.values.include?(char)
-        stack.push(char)
-      elsif stack.empty?
-        return false
+    string.each_char do |c|
+      if OPEN.values.include?(c)
+        stack.push(c)
       else
         top = stack.pop
-          if (top = '[' && char != ']') | (top = '(' && char != ')') | (top = '{' && char != '}')
+          if (top == '[' && c != ']') or (top == '(' && c != ')') or (top == '{' && c != '}')
             return false
           end
         end
