@@ -2,8 +2,7 @@ require 'byebug'
 class BalanceCheck
   OPEN = ['{', '(', '[']
   OTHER = ('a'..'z').to_a + ('A'..'Z').to_a + (0..9).to_a.map {|x| x.to_s} + '\\!"#$%&\'*+,.:;<=>?@\^_`|~-/'.split("")
-  attr_reader :string
-  attr_writer :string
+  attr_accessor :string
 
   def initialize(string)
     @string = string
@@ -16,22 +15,28 @@ class BalanceCheck
   def is_balanced?
     stack = []
     arr_of_chars = string.chars
+    count = 0
     arr_of_chars.each do |char|
+      count += 1
       if OPEN.include?(char)
         stack.push(char)
       elsif OTHER.include?(char)
         stack = stack
       else
         if stack.empty?
-          return false
+          return count
         end
         top = stack.pop
           if (top == '[' && char != ']') or (top == '(' && char != ')') or (top == '{' && char != '}')
-            return false
+            return count
           end
         end
       end
 
-    return stack.empty?
+    if stack.empty?
+      return "Success"
+    else
+      return count
+    end
   end
 end
