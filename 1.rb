@@ -1,8 +1,7 @@
 require 'byebug'
 class BalanceCheck
-  OPEN = {curly: '{', paren: "(", bracket: "["}
-  CLOSE = {curly: '}', paren: ')', bracket: ']'}
-  OTHER = ('a'..'z').to_a + ('A'..'Z').to_a + (0..9).to_a + '\\!"#$%&\'*+,.:;<=>?@\^_`|~-/'.split("")
+  OPEN = ['{', '(', '[']
+  OTHER = ('a'..'z').to_a + ('A'..'Z').to_a + (0..9).to_a.map {|x| x.to_s} + '\\!"#$%&\'*+,.:;<=>?@\^_`|~-/'.split("")
   attr_reader :string
   attr_writer :string
 
@@ -16,29 +15,23 @@ class BalanceCheck
 
   def is_balanced?
     stack = []
-    string.each_char do |c|
-      if OPEN.values.include?(c)
-        stack.push(c)
+    arr_of_chars = string.chars
+    arr_of_chars.each do |char|
+      if OPEN.include?(char)
+        stack.push(char)
+      elsif OTHER.include?(char)
+        stack = stack
       else
+        if stack.empty?
+          return false
+        end
         top = stack.pop
-          if (top == '[' && c != ']') or (top == '(' && c != ')') or (top == '{' && c != '}')
+          if (top == '[' && char != ']') or (top == '(' && char != ')') or (top == '{' && char != '}')
             return false
           end
         end
       end
+
     return stack.empty?
   end
 end
-
-  #     if OPEN.map {|_, v| v.match(input[counter])}.any?
-  #
-  #
-  #
-  #        CLOSE.map {|_, v| v.match(input[counter])}.any?
-  #       the_stack << input[counter]
-  #     end
-  #     counter += 1
-  #   end
-  #   puts the_stack
-  # end
-# end
